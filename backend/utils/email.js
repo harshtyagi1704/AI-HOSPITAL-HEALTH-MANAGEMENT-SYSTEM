@@ -35,7 +35,7 @@ const getTransporter = () => {
  * notification failure never breaks the primary request (booking a token,
  * saving a consultation, etc).
  */
-console.log("Receiver email:", to);
+
 const sendEmail = async ({ to, subject, html, text }) => {
   if (!to) return false;
 
@@ -49,6 +49,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
 
   try {
+    console.log("Receiver email:", to);
     console.log("📧 Trying to send email...");
 console.log({
   from: process.env.SMTP_USER,
