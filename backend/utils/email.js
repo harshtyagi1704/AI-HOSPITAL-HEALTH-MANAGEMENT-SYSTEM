@@ -155,92 +155,38 @@
 // };
 
 
+const { Resend } = require("resend");
+
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 
 
-
-
-
-
-const nodemailer = require("nodemailer");
-
-let transporter = null;
-
-
-const isConfigured = () =>
-  Boolean(
-    process.env.SMTP_HOST &&
-    process.env.SMTP_USER &&
-    process.env.SMTP_PASS
-  );
-
-
-const getTransporter = () => {
-
-  if (!isConfigured()) {
-    return null;
-  }
-
-
-  if (!transporter) {
-
-    transporter = nodemailer.createTransport({
-
-      host: process.env.SMTP_HOST,
-
-      // Gmail TLS port
-      port: 587,
-
-      // Port 587 uses STARTTLS
-      secure: false,
-
-
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-
-
-      tls: {
-        rejectUnauthorized: false,
-      },
-
-
-      connectionTimeout: 30000,
-
-      greetingTimeout: 30000,
-
-      socketTimeout: 60000,
-
-
-    });
-
-  }
-
-
-  return transporter;
-
+const isConfigured = () => {
+  return Boolean(process.env.RESEND_API_KEY);
 };
 
 
 
 
-const sendEmail = async ({to, subject, html, text}) => {
+
+const sendEmail = async ({ to, subject, html, text }) => {
 
 
-  if(!to){
+  if (!to) {
+
     console.log("❌ No receiver email");
+
     return false;
+
   }
 
 
-  const t = getTransporter();
 
-
-  if(!t){
+  if (!isConfigured()) {
 
     console.log(
-      `📧 SMTP NOT CONFIGURED | ${to}`
+      `📧 RESEND NOT CONFIGURED | ${to} | ${subject}`
     );
 
     return false;
@@ -253,30 +199,28 @@ const sendEmail = async ({to, subject, html, text}) => {
 
 
     console.log("📧 Sending email...");
+    
     console.log({
-      from: process.env.SMTP_USER,
+      from: process.env.EMAIL_FROM,
       to,
       subject
     });
 
 
 
-    await t.verify();
-
-
-    await t.sendMail({
+    const result = await resend.emails.send({
 
       from:
         process.env.EMAIL_FROM ||
-        `"AI Hospital" <${process.env.SMTP_USER}>`,
+        "AI Hospital <onboarding@resend.dev>",
 
-      to,
+      to: [to],
 
       subject,
 
-      text: text || undefined,
-
       html: html || undefined,
+
+      text: text || undefined,
 
     });
 
@@ -284,24 +228,19 @@ const sendEmail = async ({to, subject, html, text}) => {
 
     console.log("✅ Email sent successfully");
 
+    console.log(result);
+
+
     return true;
 
 
 
-  } catch(error){
+  } catch(error) {
 
 
     console.log("❌ EMAIL ERROR");
 
-    console.log("Message:",error.message);
-
-    console.log("Code:",error.code);
-
-    console.log("Command:",error.command);
-
-
-    // reset connection
-    transporter=null;
+    console.log(error);
 
 
     return false;
@@ -313,94 +252,41 @@ const sendEmail = async ({to, subject, html, text}) => {
 
 
 
+
+
 // ================= EMAIL TEMPLATES =================
 
 
-const sendTokenGeneratedEmail=(user,token)=>
+
+const sendTokenGeneratedEmail = (user, token) =>
 
 sendEmail({
 
-to:user.email,
+  to: user.email,
 
-subject:
-`Token #${token.tokenNumber} Generated - ${token.department}`,
+  subject:
+    `Token #${token.tokenNumber} Generated - ${token.department}`,
 
-html:`
+  html: `
 
-<h2>Your Hospital Token has been generated</h2>
+  <h2>Your Hospital Token has been generated</h2>
 
-<p>Hello ${user.name}</p>
+  <p>Hello ${user.name}</p>
 
-<p>
-Your token 
-<b>#${token.tokenNumber}</b>
-for 
-<b>${token.department}</b>
-has been booked.
-</p>
+  <p>
+  Your token 
+  <b>#${token.tokenNumber}</b>
+  for
+  <b>${token.department}</b>
+  has been booked successfully.
+  </p>
 
-<p>
-Priority:
-<b>${token.priority}</b>
-</p>
+  <p>
+  Priority:
+  <b>${token.priority}</b>
+  </p>
 
-`
-
-});
-
-
-
-
-const sendDoctorCalledEmail=(user,token)=>
-
-sendEmail({
-
-to:user.email,
-
-subject:
-`Doctor has called you - Token #${token.tokenNumber}`,
-
-html:`
-
-<h2>Doctor is ready</h2>
-
-<p>
-Hello ${user.name}
-</p>
-
-<p>
-Please proceed to ${token.department}.
-Your token #${token.tokenNumber} has been called.
-</p>
-
-`
-
-});
-
-
-
-
-const sendAppointmentReminderEmail=(user,appointment,doctorName)=>
-
-sendEmail({
-
-to:user.email,
-
-subject:
-`Reminder: Appointment with Dr. ${doctorName}`,
-
-html:`
-
-<h2>Appointment Reminder</h2>
-
-<p>
-Doctor: Dr. ${doctorName}<br>
-Department: ${appointment.department}<br>
-Date: ${appointment.appointmentDate}<br>
-Time: ${appointment.timeSlot}
-</p>
-
-`
+  `
 
 });
 
@@ -408,29 +294,34 @@ Time: ${appointment.timeSlot}
 
 
 
-const sendVerificationEmail=(user,verifyUrl)=>
+
+
+const sendDoctorCalledEmail = (user, token) =>
 
 sendEmail({
 
-to:user.email,
+  to:user.email,
 
-subject:"Verify your email - AI Hospital",
+  subject:
+    `Doctor has called you - Token #${token.tokenNumber}`,
 
-html:`
+  html:`
 
-<h2>
-Welcome ${user.name}
-</h2>
+  <h2>Doctor is ready</h2>
 
-<p>
-Verify your email:
-</p>
+  <p>
+  Hello ${user.name}
+  </p>
 
-<a href="${verifyUrl}">
-${verifyUrl}
-</a>
+  <p>
+  Please proceed to 
+  <b>${token.department}</b>.
+  Your token 
+  <b>#${token.tokenNumber}</b>
+  has been called.
+  </p>
 
-`
+  `
 
 });
 
@@ -438,47 +329,128 @@ ${verifyUrl}
 
 
 
-const sendPasswordResetEmail=(user,resetUrl)=>
+
+
+
+const sendAppointmentReminderEmail = 
+(user, appointment, doctorName) =>
 
 sendEmail({
 
-to:user.email,
+  to:user.email,
 
-subject:"Reset your password - AI Hospital",
+  subject:
+    `Reminder: Appointment with Dr. ${doctorName}`,
 
-html:`
+  html:`
 
-<h2>Password Reset</h2>
+  <h2>Appointment Reminder</h2>
 
-<p>
-Click below:
-</p>
+  <p>
+  Doctor: Dr. ${doctorName}<br>
+  Department: ${appointment.department}<br>
+  Date: ${appointment.appointmentDate}<br>
+  Time: ${appointment.timeSlot}
+  </p>
 
-<a href="${resetUrl}">
-${resetUrl}
-</a>
-
-`
+  `
 
 });
 
 
 
 
-module.exports={
 
-sendEmail,
 
-isConfigured,
 
-sendTokenGeneratedEmail,
 
-sendDoctorCalledEmail,
+const sendVerificationEmail = (user, verifyUrl) =>
 
-sendAppointmentReminderEmail,
+sendEmail({
 
-sendVerificationEmail,
+  to:user.email,
 
-sendPasswordResetEmail
+  subject:
+    "Verify your email - AI Hospital",
+
+  html:`
+
+  <h2>
+  Welcome ${user.name}
+  </h2>
+
+  <p>
+  Please verify your email address:
+  </p>
+
+  <a href="${verifyUrl}">
+  Verify Email
+  </a>
+
+  <p>
+  ${verifyUrl}
+  </p>
+
+  `
+
+});
+
+
+
+
+
+
+
+
+const sendPasswordResetEmail = (user, resetUrl) =>
+
+sendEmail({
+
+  to:user.email,
+
+  subject:
+    "Reset your password - AI Hospital",
+
+  html:`
+
+  <h2>Password Reset Request</h2>
+
+  <p>
+  Hello ${user.name}
+  </p>
+
+  <p>
+  Click below to reset your password:
+  </p>
+
+  <a href="${resetUrl}">
+  Reset Password
+  </a>
+
+  `
+
+});
+
+
+
+
+
+
+
+module.exports = {
+
+  sendEmail,
+
+  isConfigured,
+
+  sendTokenGeneratedEmail,
+
+  sendDoctorCalledEmail,
+
+  sendAppointmentReminderEmail,
+
+  sendVerificationEmail,
+
+  sendPasswordResetEmail
 
 };
