@@ -24,17 +24,7 @@ const getTransporter = () => {
       greetingTimeout: 10000,   // 10s to receive the SMTP greeting
       socketTimeout: 15000,     // 15s of socket inactivity before giving up
     });
-      transporter.verify((error)=>{
 
-    if(error){
-      console.log("❌ SMTP ERROR:");
-      console.log(error);
-    }
-    else{
-      console.log("✅ SMTP SERVER READY");
-    }
-
-  });
   }
 
   return transporter;
@@ -45,6 +35,7 @@ const getTransporter = () => {
  * notification failure never breaks the primary request (booking a token,
  * saving a consultation, etc).
  */
+console.log("Receiver email:", to);
 const sendEmail = async ({ to, subject, html, text }) => {
   if (!to) return false;
 
@@ -58,6 +49,12 @@ const sendEmail = async ({ to, subject, html, text }) => {
   }
 
   try {
+    console.log("📧 Trying to send email...");
+console.log({
+  from: process.env.SMTP_USER,
+  to,
+  subject
+});
     await t.sendMail({
       from: process.env.EMAIL_FROM || `"AI Hospital" <${process.env.SMTP_USER}>`,
       to,
@@ -67,7 +64,12 @@ const sendEmail = async ({ to, subject, html, text }) => {
     });
     return true;
   } catch (error) {
-    console.error("📧 Email send failed:", error.message);
+    // console.error("📧 Email send failed:", error.message);
+  console.error("📧 EMAIL FAILED");
+  console.error("Message:", error.message);
+  console.error("Code:", error.code);
+  console.error("Command:", error.command);
+  console.error("Response:", error.response);
     return false;
   }
 };
@@ -150,13 +152,3 @@ module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
 };
-getTransporter().verify((error, success) => {
-
-  if (error) {
-    console.log("❌ SMTP CONNECTION FAILED");
-    console.log(error);
-  } else {
-    console.log("✅ SMTP CONNECTION SUCCESS");
-  }
-
-});
