@@ -16,6 +16,13 @@ const getTransporter = () => {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      // Fail fast instead of hanging for nodemailer's ~2 minute defaults
+      // if the SMTP host is slow/unreachable (e.g. outbound SMTP blocked
+      // by the hosting provider). Without this, a stuck connection here
+      // can stall the whole request that triggered the email.
+      connectionTimeout: 10000, // 10s to establish the TCP connection
+      greetingTimeout: 10000,   // 10s to receive the SMTP greeting
+      socketTimeout: 15000,     // 15s of socket inactivity before giving up
     });
   }
 

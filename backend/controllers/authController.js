@@ -36,13 +36,15 @@ const registerUser = async (req, res) => {
             department: req.body.department || ""
         });
 
-        // Phase 42: fire off an email-verification link (best-effort, never blocks registration)
-        try {
-            const { sendVerification } = require("./profileController");
-            await sendVerification(user);
-        } catch (verifyError) {
+        // Phase 42: fire off an email-verification link. This is intentionally
+        // NOT awaited — sending the email can be slow or hang (e.g. blocked
+        // SMTP port on the host), and we don't want that to delay or break
+        // the registration response, since the account is already created
+        // at this point regardless of whether the email succeeds.
+        const { sendVerification } = require("./profileController");
+        sendVerification(user).catch((verifyError) => {
             console.error("Verification email failed:", verifyError.message);
-        }
+        });
 
         await logAudit(req, "USER_REGISTERED", `New ${role} registered: ${email}`);
 
