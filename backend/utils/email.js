@@ -24,6 +24,17 @@ const getTransporter = () => {
       greetingTimeout: 10000,   // 10s to receive the SMTP greeting
       socketTimeout: 15000,     // 15s of socket inactivity before giving up
     });
+      transporter.verify((error)=>{
+
+    if(error){
+      console.log("❌ SMTP ERROR:");
+      console.log(error);
+    }
+    else{
+      console.log("✅ SMTP SERVER READY");
+    }
+
+  });
   }
 
   return transporter;
@@ -139,3 +150,13 @@ module.exports = {
   sendVerificationEmail,
   sendPasswordResetEmail,
 };
+getTransporter().verify((error, success) => {
+
+  if (error) {
+    console.log("❌ SMTP CONNECTION FAILED");
+    console.log(error);
+  } else {
+    console.log("✅ SMTP CONNECTION SUCCESS");
+  }
+
+});
