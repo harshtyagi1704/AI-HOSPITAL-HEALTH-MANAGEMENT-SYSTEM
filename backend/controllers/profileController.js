@@ -192,7 +192,7 @@ const resetPassword = async (req, res) => {
   }
 };
 
-// ================= SEND / RESEND VERIFICATION EMAIL (Phase 42) =================
+// ================= SEND /  VERIFICATION EMAIL (Phase 42) =================
 const sendVerification = async (user) => {
   const rawToken = crypto.randomBytes(32).toString("hex");
   user.emailVerifyToken = crypto.createHash("sha256").update(rawToken).digest("hex");
@@ -236,12 +236,13 @@ console.log("HASHED TOKEN:", hashedToken);
       emailVerifyExpires: { $gt: Date.now() },
     });
 console.log("USER FOUND:", user ? user.email : "NO USER");
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Verification link is invalid or has expired",
-      });
-    }
+if (!user) {
+  return res.status(200).json({
+    success: true,
+    message:
+      "Your email is already verified or this verification link has already been used. You can now log in.",
+  });
+}
 
     user.isVerified = true;
     user.emailVerifyToken = null;
