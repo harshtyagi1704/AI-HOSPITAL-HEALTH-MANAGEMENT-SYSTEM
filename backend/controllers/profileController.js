@@ -227,32 +227,49 @@ const resendVerification = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
- console.log("VERIFY TOKEN RECEIVED:", token);
-    const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
-console.log("HASHED TOKEN:", hashedToken);
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Verification token is missing",
+      });
+    }
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
     const user = await User.findOne({
       emailVerifyToken: hashedToken,
       emailVerifyExpires: { $gt: Date.now() },
     });
-console.log("USER FOUND:", user ? user.email : "NO USER");
-if (!user) {
-  return res.status(200).json({
-    success: true,
-    message:
-      "Your email is already verified or this verification link has already been used. You can now log in.",
-  });
-}
+
+    if (!user) {
+      return res.status(200).json({
+        success: true,
+        message:
+          "Your email is already verified or this verification link has already been used. You can now log in.",
+      });
+    }
 
     user.isVerified = true;
     user.emailVerifyToken = null;
     user.emailVerifyExpires = null;
+
     await user.save();
 
-    res.status(200).json({ success: true, message: "Email verified successfully" });
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully. You can now log in.",
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.error("Email verification error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server Error",
+    });
   }
 };
 

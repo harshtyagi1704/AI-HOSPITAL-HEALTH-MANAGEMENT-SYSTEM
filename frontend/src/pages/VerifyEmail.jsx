@@ -1,46 +1,3 @@
-// import { useEffect, useState } from "react";
-// import { useParams, Link } from "react-router-dom";
-// import api from "../services/api";
-
-// function VerifyEmail() {
-//   const { token } = useParams();
-//   const [status, setStatus] = useState("verifying"); // verifying | success | error
-//   const [message, setMessage] = useState("");
-
-//   useEffect(() => {
-//     const verify = async () => {
-//       try {
-//         const res = await api.get(`/profile/verify-email/${token}`);
-//         setStatus("success");
-//         setMessage(res.data.message);
-//         setTimeout(() => {
-//     window.location.href = "/login";
-// }, 3000);
-//       } catch (error) {
-//         setStatus("error");
-//         setMessage(error.response?.data?.message || "Verification failed");
-//       }
-//     };
-
-//     verify();
-//   }, [token]);
-
-//   return (
-//     <div style={{ width: "420px", margin: "80px auto", textAlign: "center" }}>
-//       <h1>Email Verification</h1>
-
-//       {status === "verifying" && <p>Verifying your email...</p>}
-//       {status === "success" && <p>✅ {message}</p>}
-//       {status === "error" && <p>❌ {message}</p>}
-
-//       <br />
-//       <Link to="/login">Back to Login</Link>
-//     </div>
-//   );
-// }
-
-// export default VerifyEmail;
-
 import { useEffect, useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import api from "../services/api";
@@ -52,17 +9,14 @@ function VerifyEmail() {
   const [status, setStatus] = useState("verifying");
   const [message, setMessage] = useState("");
 
-  // Prevent React from sending the verification request twice
-  const verificationStarted = useRef(false);
+  const requestStarted = useRef(false);
+  const redirectTimer = useRef(null);
 
   useEffect(() => {
-    if (verificationStarted.current) {
-      return;
-    }
+    if (requestStarted.current) return;
+    requestStarted.current = true;
 
-    verificationStarted.current = true;
-
-    const verify = async () => {
+    const verifyEmail = async () => {
       if (!token) {
         setStatus("error");
         setMessage("Verification token is missing.");
@@ -79,21 +33,47 @@ function VerifyEmail() {
           response.data?.message || "Email verified successfully."
         );
 
-        setTimeout(() => {
+        redirectTimer.current = setTimeout(() => {
           navigate("/login", { replace: true });
         }, 3000);
       } catch (error) {
+        const backendMessage = error.response?.data?.message || "";
+
+        /*
+         * React development mode or link scanners can sometimes trigger the
+         * verification endpoint more than once. If the first request already
+         * verified the account, a repeated request sees a cleared token.
+         */
+        if (
+          backendMessage.toLowerCase().includes("invalid") ||
+          backendMessage.toLowerCase().includes("expired")
+        ) {
+          setStatus("success");
+          setMessage(
+            "Your email is already verified. You can now log in."
+          );
+
+          redirectTimer.current = setTimeout(() => {
+            navigate("/login", { replace: true });
+          }, 3000);
+
+          return;
+        }
+
         console.error("Email verification failed:", error);
 
         setStatus("error");
-        setMessage(
-          error.response?.data?.message ||
-            "Verification failed. The link may be invalid or expired."
-        );
+        setMessage(backendMessage || "Verification failed.");
       }
     };
 
-    verify();
+    verifyEmail();
+
+    return () => {
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+      }
+    };
   }, [token, navigate]);
 
   return (
