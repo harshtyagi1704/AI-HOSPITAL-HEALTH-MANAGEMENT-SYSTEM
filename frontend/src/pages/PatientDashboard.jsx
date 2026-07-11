@@ -81,7 +81,7 @@ function PatientDashboard() {
       >
         <div >
           <h2
-           style={{ color: "#156983",marginTop: "-15px", marginBottom: "25px", }}>
+           style={{ color: "#156983",marginTop: "-10px", marginBottom: "15px", }}>
           PATIENT DASHBOARD
           </h2>
 
@@ -140,16 +140,16 @@ function PatientDashboard() {
             }}
           >
             <div>
-              <p style={{ margin: 0, color: "#ffffff" }}>Current Token</p>
+              <p style={{ margin: 0, color: "#ffffff" }}>Token Number</p>
               <h2 style={{ margin: "4px 0", color: "#ffffff" }}>
-                {myToken.token.tokenNumber}
+                #{myToken.token.tokenNumber}
               </h2>
             </div>
 
             <div>
               <p style={{ margin: 0, color: "#eef6ff" }}>Queue Position</p>
               <h2 style={{ margin: "4px 0", color: "#ffffff" }}>
-                {myToken.queuePosition} / {myToken.totalInQueue}
+                {myToken.queuePosition}
               </h2>
             </div>
 
@@ -181,7 +181,7 @@ function PatientDashboard() {
           marginBottom: "40px",
         }}
       >
-        <StatCard title="Total Tokens" value={stats.totalTokens} color="#0a2b35" />
+        {/* <StatCard title="Token Generated" value={stats.totalTokens} color="#0a2b35" /> */}
         <StatCard title="Live Queue" value={stats.liveQueue} color="#0a2b35" />
         <StatCard title="Emergency" value={stats.emergency} color="#0a2b35" />
       </div>
@@ -207,7 +207,7 @@ function PatientDashboard() {
           <div className="card">
             <FaHospital size={40} color="#2e7d32" />
             <h2>Live Queue</h2>
-            <p>Check current queue status.</p>
+            <p>Check current queue status and wait for your turn. </p>
           </div>
         </Link>
 
@@ -215,7 +215,7 @@ function PatientDashboard() {
           <div className="card">
             <FaRobot size={40} color="#6a1b9a" />
             <h2>AI Symptom Checker</h2>
-            <p>Get instant AI-based guidance.</p>
+            <p>Get instant AI-based guidance and Precautions.</p>
           </div>
         </Link>
 
@@ -239,7 +239,7 @@ function PatientDashboard() {
           <div className="card">
             <FaFileUpload size={40} color="#5d4037" />
             <h2>Medical Reports</h2>
-            <p>Upload & view lab reports.</p>
+            <p>Upload & view all your LAB reports here.</p>
           </div>
         </Link>
 
