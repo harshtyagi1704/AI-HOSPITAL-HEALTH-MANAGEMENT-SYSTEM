@@ -199,7 +199,7 @@ const sendVerification = async (user) => {
   user.emailVerifyExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
   await user.save();
 
-  const verifyUrl = `${FRONTEND_URL}/verify-email/${rawToken}`;
+  const verifyUrl = `${process.env.BACKEND_URL}/api/profile/verify-email/${rawToken}`;
   await sendVerificationEmail(user, verifyUrl);
 };
 
