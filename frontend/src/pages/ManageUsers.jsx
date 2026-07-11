@@ -136,14 +136,14 @@ function ManageUsers() {
 
   return (
     <Layout>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:25,flexWrap:"wrap",gap:12}}>
-        <h1 style={{color:"#1976d2",margin:0}}>User Management</h1>
+      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:17,flexWrap:"wrap",gap:12}}>
+        <h2 style={{marginTop:"-15px",color:"#1c5a6d",margin:0}}>USER MANAGEMENT</h2>
 
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
           <button
             onClick={handleExportExcel}
             disabled={exporting}
-            style={{padding:"10px 16px",background:"#2e7d32",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}
+            style={{padding:"10px 16px",background:"#032eec",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}
           >
             ⬇ Export Excel
           </button>
@@ -151,23 +151,24 @@ function ManageUsers() {
           <button
             onClick={handleExportPDF}
             disabled={exporting}
-            style={{padding:"10px 16px",background:"#c62828",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}
+            style={{padding:"10px 16px",background:"#082bee",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}
           >
             ⬇ Export PDF
           </button>
 
           <button onClick={()=>{setEditingUser(null);setOpenModal(true);}}
-            style={{padding:"10px 18px",background:"#1976d2",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}>
+            style={{padding:"10px 18px",background:"#850f0f",color:"#fff",border:"none",borderRadius:8,cursor:"pointer"}}>
             + Add User
           </button>
         </div>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:20,marginBottom:30}}>
-        <DashboardCard title="Total Users" value={stats.total} color="#1976d2" icon=""/>
+        <DashboardCard title="Total Users" value={stats.total} color="#a39515" icon=""/>
         <DashboardCard title="Doctors (this page)" value={stats.doctors} color="#43a047" icon=""/>
-        <DashboardCard title="Patients (this page)" value={stats.patients} color="#fb8c00" icon=""/>
-        <DashboardCard title="Admins (this page)" value={stats.admins} color="#d81b60" icon=""/>
+        <DashboardCard title="Patients (this page)" value={stats.patients} color="#a39515" icon=""/>
+        <DashboardCard title="Admins (this page)" value={stats.admins} color="#43a047" icon=""/>
+        
       </div>
 
       <div style={{display:"flex",gap:15,marginBottom:25,flexWrap:"wrap"}}>
@@ -199,11 +200,11 @@ function ManageUsers() {
             ) : (
               users.map(u=>(
                 <tr key={u._id} style={{borderBottom:"2px solid #000000"}}>
-                  <td>{u.name}</td>
-                  <td>{u.email}</td>
-                  <td>{u.phone}</td>
-                  <td><RoleBadge role={u.role}/></td>
-                  <td><DepartmentBadge department={u.department}/></td>
+                  <td style={{ textAlign: "center" }}>{u.name}</td>
+                  <td style={{ textAlign: "center" }}>{u.email}</td>
+                  <td style={{ textAlign: "center" }}>{u.phone}</td>
+                  <td style={{ textAlign: "center" }}><RoleBadge role={u.role}/></td>
+                  <td style={{ textAlign: "center" }}><DepartmentBadge department={u.department}/></td>
                   <td style={{display:"flex",gap:"8px"}}>
                     <button onClick={()=>{setEditingUser(u);setOpenModal(true);}} style={{padding:"10px 10px",background:"#2e649b",color:"#f3eaea",border:"none",borderRadius:"1px",cursor:"pointer"}}>Edit</button>
                     <button onClick={async()=>{if(!window.confirm("Delete this user?")) return; try{await api.delete(`/users/${u._id}`); toast.success("User deleted"); fetchUsers();}catch(err){toast.error(err.response?.data?.message||"Delete failed");}}} style={{padding:"5px 10px",background:"#d32f2f",color:"#fff",border:"none",borderRadius:"1px",cursor:"pointer"}}>Delete</button>
