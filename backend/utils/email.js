@@ -1,456 +1,223 @@
-// const nodemailer = require("nodemailer");
-// let transporter = null;
+const nodemailer = require("nodemailer");
 
-// const isConfigured = () =>
-//   process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS;
+let transporter = null;
 
-// const getTransporter = () => {
-//   if (!isConfigured()) return null;
+// ================= CONFIGURATION =================
 
-//   if (!transporter) {
-//     transporter = nodemailer.createTransport({
-//       host: process.env.SMTP_HOST,
-//       port: Number(process.env.SMTP_PORT) || 587,
-//       secure: Number(process.env.SMTP_PORT) === 465,
-//       auth: {
-//         user: process.env.SMTP_USER,
-//         pass: process.env.SMTP_PASS,
-//       },
-//       // Fail fast instead of hanging for nodemailer's ~2 minute defaults
-//       // if the SMTP host is slow/unreachable (e.g. outbound SMTP blocked
-//       // by the hosting provider). Without this, a stuck connection here
-//       // can stall the whole request that triggered the email.
-//       connectionTimeout: 10000, // 10s to establish the TCP connection
-//       greetingTimeout: 10000,   // 10s to receive the SMTP greeting
-//       socketTimeout: 15000,     // 15s of socket inactivity before giving up
-//     });
+const isConfigured = () =>
+  Boolean(
+    process.env.SMTP_HOST &&
+      process.env.SMTP_PORT &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASS &&
+      process.env.EMAIL_FROM
+  );
 
-//   }
+const getTransporter = () => {
+  if (!isConfigured()) {
+    return null;
+  }
 
-//   return transporter;
-// };
+  if (!transporter) {
+    const port = Number(process.env.SMTP_PORT) || 587;
 
-// /**
-//  * Send an email. Never throws — logs and resolves false on failure so a
-//  * notification failure never breaks the primary request (booking a token,
-//  * saving a consultation, etc).
-//  */
+    transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port,
 
-// const sendEmail = async ({ to, subject, html, text }) => {
-//   if (!to) return false;
+      // Port 465 uses direct TLS.
+      // Port 587 and 2525 use STARTTLS.
+      secure: port === 465,
 
-//   const t = getTransporter();
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
 
-//   if (!t) {
-//     console.log(
-//       `📧 [EMAIL - SMTP NOT CONFIGURED] To: ${to} | Subject: ${subject}`
-//     );
-//     return false;
-//   }
+      requireTLS: port !== 465,
 
-//   try {
-//     console.log("Receiver email:", to);
-//     console.log("📧 Trying to send email...");
-// console.log({
-//   from: process.env.SMTP_USER,
-//   to,
-//   subject
-// });
-//     await t.sendMail({
-//       from: process.env.EMAIL_FROM || `"AI Hospital" <${process.env.SMTP_USER}>`,
-//       to,
-//       subject,
-//       text: text || undefined,
-//       html: html || undefined,
-//     });
-//     return true;
-//   } catch (error) {
-//     // console.error("📧 Email send failed:", error.message);
-//   console.error("📧 EMAIL FAILED");
-//   console.error("Message:", error.message);
-//   console.error("Code:", error.code);
-//   console.error("Command:", error.command);
-//   console.error("Response:", error.response);
-//     return false;
-//   }
-// };
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 60000,
+    });
+  }
 
-// // ================= NOTIFICATION TEMPLATES =================
-
-// const sendTokenGeneratedEmail = (user, token) =>
-//   sendEmail({
-//     to: user.email,
-//     subject: `Token #${token.tokenNumber} Generated - ${token.department}`,
-//     html: `
-//       <h2>Your Hospital Token has been generated</h2>
-//       <p>Hi ${user.name},</p>
-//       <p>Your token <b>#${token.tokenNumber}</b> for <b>${token.department}</b> has been booked successfully.</p>
-//       <p>Priority: <b>${token.priority}</b></p>
-//       <p>Please check the app for your live queue position and estimated waiting time.</p>
-//     `,
-//   });
-
-// const sendDoctorCalledEmail = (user, token) =>
-//   sendEmail({
-//     to: user.email,
-//     subject: `🔔 Doctor has called you - Token #${token.tokenNumber}`,
-//     html: `
-//       <h2>The doctor is ready to see you</h2>
-//       <p>Hi ${user.name},</p>
-//       <p>Please proceed to the <b>${token.department}</b> department. Your token <b>#${token.tokenNumber}</b> has been called.</p>
-//     `,
-//   });
-
-// const sendAppointmentReminderEmail = (user, appointment, doctorName) =>
-//   sendEmail({
-//     to: user.email,
-//     subject: `Reminder: Appointment with Dr. ${doctorName} today`,
-//     html: `
-//       <h2>Appointment Reminder</h2>
-//       <p>Hi ${user.name},</p>
-//       <p>This is a reminder for your upcoming appointment:</p>
-//       <ul>
-//         <li><b>Doctor:</b> Dr. ${doctorName}</li>
-//         <li><b>Department:</b> ${appointment.department}</li>
-//         <li><b>Date:</b> ${appointment.appointmentDate}</li>
-//         <li><b>Time:</b> ${appointment.timeSlot}</li>
-//       </ul>
-//       <p>Please arrive 10 minutes early.</p>
-//     `,
-//   });
-
-// const sendVerificationEmail = (user, verifyUrl) =>
-//   sendEmail({
-//     to: user.email,
-//     subject: "Verify your email - AI Hospital",
-//     html: `
-//       <h2>Welcome to AI Hospital, ${user.name}!</h2>
-//       <p>Please verify your email address by clicking the link below:</p>
-//       <p><a href="${verifyUrl}">${verifyUrl}</a></p>
-//       <p>This link expires in 24 hours.</p>
-//     `,
-//   });
-
-// const sendPasswordResetEmail = (user, resetUrl) =>
-//   sendEmail({
-//     to: user.email,
-//     subject: "Reset your password - AI Hospital",
-//     html: `
-//       <h2>Password Reset Request</h2>
-//       <p>Hi ${user.name},</p>
-//       <p>Click the link below to reset your password. This link expires in 30 minutes.</p>
-//       <p><a href="${resetUrl}">${resetUrl}</a></p>
-//       <p>If you didn't request this, you can safely ignore this email.</p>
-//     `,
-//   });
-
-// module.exports = {
-//   sendEmail,
-//   isConfigured,
-//   sendTokenGeneratedEmail,
-//   sendDoctorCalledEmail,
-//   sendAppointmentReminderEmail,
-//   sendVerificationEmail,
-//   sendPasswordResetEmail,
-// };
-
-
-const { Resend } = require("resend");
-
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-
-
-const isConfigured = () => {
-  return Boolean(process.env.RESEND_API_KEY);
+  return transporter;
 };
 
-
-
-
+// ================= SEND EMAIL =================
 
 const sendEmail = async ({ to, subject, html, text }) => {
-
-
   if (!to) {
-
-    console.log("❌ No receiver email");
-
+    console.error("❌ Email recipient is missing");
     return false;
-
   }
 
+  const currentTransporter = getTransporter();
 
-
-  if (!isConfigured()) {
-
-    console.log(
-      `📧 RESEND NOT CONFIGURED | ${to} | ${subject}`
+  if (!currentTransporter) {
+    console.error(
+      `❌ Brevo SMTP is not configured | To: ${to} | Subject: ${subject}`
     );
-
     return false;
-
   }
-
-
 
   try {
-
-
-    console.log("📧 Sending email...");
-    
+    console.log("📧 Sending email through Brevo...");
     console.log({
       from: process.env.EMAIL_FROM,
       to,
-      subject
-    });
-
-
-
-    const result = await resend.emails.send({
-
-      from:
-        process.env.EMAIL_FROM ||
-        "AI Hospital <onboarding@resend.dev>",
-
-      to: [to],
-
       subject,
-
-      html: html || undefined,
-
-      text: text || undefined,
-
     });
 
-
+    const info = await currentTransporter.sendMail({
+      from: process.env.EMAIL_FROM,
+      to,
+      subject,
+      text: text || undefined,
+      html: html || undefined,
+    });
 
     console.log("✅ Email sent successfully");
-
-    console.log(result);
-
+    console.log("Message ID:", info.messageId);
 
     return true;
+  } catch (error) {
+    console.error("❌ BREVO EMAIL ERROR");
+    console.error("Message:", error.message);
+    console.error("Code:", error.code);
+    console.error("Command:", error.command);
+    console.error("Response:", error.response);
+    console.error("Response code:", error.responseCode);
 
-
-
-  } catch(error) {
-
-
-    console.log("❌ EMAIL ERROR");
-
-    console.log(error);
-
+    // Recreate the connection on the next email attempt.
+    transporter = null;
 
     return false;
-
   }
-
 };
-
-
-
-
-
 
 // ================= EMAIL TEMPLATES =================
 
-
-
 const sendTokenGeneratedEmail = (user, token) =>
-
-sendEmail({
-
-  to: user.email,
-
-  subject:
-    `Token #${token.tokenNumber} Generated - ${token.department}`,
-
-  html: `
-
-  <h2>Your Hospital Token has been generated</h2>
-
-  <p>Hello ${user.name}</p>
-
-  <p>
-  Your token 
-  <b>#${token.tokenNumber}</b>
-  for
-  <b>${token.department}</b>
-  has been booked successfully.
-  </p>
-
-  <p>
-  Priority:
-  <b>${token.priority}</b>
-  </p>
-
-  `
-
-});
-
-
-
-
-
-
+  sendEmail({
+    to: user.email,
+    subject: `Token #${token.tokenNumber} Generated - ${token.department}`,
+    html: `
+      <h2>Your Hospital Token Has Been Generated</h2>
+      <p>Hello ${user.name},</p>
+      <p>
+        Your token <strong>#${token.tokenNumber}</strong> for
+        <strong>${token.department}</strong> has been booked successfully.
+      </p>
+      <p>Priority: <strong>${token.priority}</strong></p>
+      <p>
+        Please check the application for your live queue position and
+        estimated waiting time.
+      </p>
+    `,
+  });
 
 const sendDoctorCalledEmail = (user, token) =>
+  sendEmail({
+    to: user.email,
+    subject: `Doctor Has Called You - Token #${token.tokenNumber}`,
+    html: `
+      <h2>The Doctor Is Ready to See You</h2>
+      <p>Hello ${user.name},</p>
+      <p>
+        Please proceed to the <strong>${token.department}</strong> department.
+        Your token <strong>#${token.tokenNumber}</strong> has been called.
+      </p>
+    `,
+  });
 
-sendEmail({
-
-  to:user.email,
-
-  subject:
-    `Doctor has called you - Token #${token.tokenNumber}`,
-
-  html:`
-
-  <h2>Doctor is ready</h2>
-
-  <p>
-  Hello ${user.name}
-  </p>
-
-  <p>
-  Please proceed to 
-  <b>${token.department}</b>.
-  Your token 
-  <b>#${token.tokenNumber}</b>
-  has been called.
-  </p>
-
-  `
-
-});
-
-
-
-
-
-
-
-
-const sendAppointmentReminderEmail = 
-(user, appointment, doctorName) =>
-
-sendEmail({
-
-  to:user.email,
-
-  subject:
-    `Reminder: Appointment with Dr. ${doctorName}`,
-
-  html:`
-
-  <h2>Appointment Reminder</h2>
-
-  <p>
-  Doctor: Dr. ${doctorName}<br>
-  Department: ${appointment.department}<br>
-  Date: ${appointment.appointmentDate}<br>
-  Time: ${appointment.timeSlot}
-  </p>
-
-  `
-
-});
-
-
-
-
-
-
-
+const sendAppointmentReminderEmail = (user, appointment, doctorName) =>
+  sendEmail({
+    to: user.email,
+    subject: `Reminder: Appointment with Dr. ${doctorName}`,
+    html: `
+      <h2>Appointment Reminder</h2>
+      <p>Hello ${user.name},</p>
+      <p>This is a reminder for your upcoming appointment:</p>
+      <ul>
+        <li><strong>Doctor:</strong> Dr. ${doctorName}</li>
+        <li><strong>Department:</strong> ${appointment.department}</li>
+        <li><strong>Date:</strong> ${appointment.appointmentDate}</li>
+        <li><strong>Time:</strong> ${appointment.timeSlot}</li>
+      </ul>
+      <p>Please arrive 10 minutes early.</p>
+    `,
+  });
 
 const sendVerificationEmail = (user, verifyUrl) =>
+  sendEmail({
+    to: user.email,
+    subject: "Verify Your Email - AI Hospital",
+    html: `
+      <h2>Welcome to AI Hospital, ${user.name}!</h2>
+      <p>Please verify your email address by clicking the button below.</p>
 
-sendEmail({
+      <p>
+        <a
+          href="${verifyUrl}"
+          style="
+            display: inline-block;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+          "
+        >
+          Verify Email
+        </a>
+      </p>
 
-  to:user.email,
-
-  subject:
-    "Verify your email - AI Hospital",
-
-  html:`
-
-  <h2>
-  Welcome ${user.name}
-  </h2>
-
-  <p>
-  Please verify your email address:
-  </p>
-
-  <a href="${verifyUrl}">
-  Verify Email
-  </a>
-
-  <p>
-  ${verifyUrl}
-  </p>
-
-  `
-
-});
-
-
-
-
-
-
-
+      <p>If the button does not work, open this link:</p>
+      <p>${verifyUrl}</p>
+      <p>This verification link expires in 24 hours.</p>
+    `,
+  });
 
 const sendPasswordResetEmail = (user, resetUrl) =>
+  sendEmail({
+    to: user.email,
+    subject: "Reset Your Password - AI Hospital",
+    html: `
+      <h2>Password Reset Request</h2>
+      <p>Hello ${user.name},</p>
+      <p>Click the button below to reset your password.</p>
 
-sendEmail({
+      <p>
+        <a
+          href="${resetUrl}"
+          style="
+            display: inline-block;
+            padding: 12px 20px;
+            background: #2563eb;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+          "
+        >
+          Reset Password
+        </a>
+      </p>
 
-  to:user.email,
-
-  subject:
-    "Reset your password - AI Hospital",
-
-  html:`
-
-  <h2>Password Reset Request</h2>
-
-  <p>
-  Hello ${user.name}
-  </p>
-
-  <p>
-  Click below to reset your password:
-  </p>
-
-  <a href="${resetUrl}">
-  Reset Password
-  </a>
-
-  `
-
-});
-
-
-
-
-
-
+      <p>If the button does not work, open this link:</p>
+      <p>${resetUrl}</p>
+      <p>This reset link expires in 30 minutes.</p>
+      <p>If you did not request this, you can ignore this email.</p>
+    `,
+  });
 
 module.exports = {
-
   sendEmail,
-
   isConfigured,
-
   sendTokenGeneratedEmail,
-
   sendDoctorCalledEmail,
-
   sendAppointmentReminderEmail,
-
   sendVerificationEmail,
-
-  sendPasswordResetEmail
-
+  sendPasswordResetEmail,
 };
