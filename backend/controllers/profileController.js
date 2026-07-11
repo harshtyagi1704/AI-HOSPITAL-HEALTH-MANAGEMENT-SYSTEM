@@ -227,14 +227,15 @@ const resendVerification = async (req, res) => {
 const verifyEmail = async (req, res) => {
   try {
     const { token } = req.params;
-
+ console.log("VERIFY TOKEN RECEIVED:", token);
     const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
+console.log("HASHED TOKEN:", hashedToken);
     const user = await User.findOne({
       emailVerifyToken: hashedToken,
       emailVerifyExpires: { $gt: Date.now() },
     });
-
+console.log("USER FOUND:", user ? user.email : "NO USER");
     if (!user) {
       return res.status(400).json({
         success: false,
