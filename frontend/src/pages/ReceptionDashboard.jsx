@@ -167,10 +167,22 @@ function ReceptionDashboard() {
                   style={{ padding: "10px" }}
                 >
                   <option>All</option>
-                  <option>Cardiology</option>
-                  <option>Neurology</option>
-                  <option>Orthopedics</option>
-                  <option>Dermatology</option>
+                             <option>General Medicine</option>
+    <option>Cardiology</option>
+    <option>Neurology</option>
+    <option>Orthopedics</option>
+    <option>Dermatology</option>
+    <option>Pediatrics</option>
+    <option>Gynecology</option>
+    <option>ENT</option>
+    <option>Ophthalmology</option>
+    <option>Dentistry</option>
+    <option>Pulmonology</option>
+    <option>Nephrology</option>
+    <option>Urology</option>
+    <option>General Surgery</option>
+    <option>Psychiatry</option>
+
                 </select>
               </div>
 

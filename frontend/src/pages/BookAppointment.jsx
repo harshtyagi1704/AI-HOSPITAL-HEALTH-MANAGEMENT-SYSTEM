@@ -5,7 +5,7 @@ import Layout from "../components/Layout";
 import LogoutButton from "../components/LogoutButton";
 import api from "../services/api";
 
-const DEPARTMENTS = ["Cardiology", "Neurology", "Orthopedics", "Dermatology", "General Medicine"];
+const DEPARTMENTS = ["Cardiology", "Neurology", "Orthopedics", "Dermatology", "General Medicine","Pediatrics","Gynecology","ENT","Ophthalmology","Dentistry","Pulmonology","Nephrology","Urology","General Surgery","Psychiatry"];
 
 const TIME_SLOTS = [
   "09:00 - 09:30", "09:30 - 10:00", "10:00 - 10:30", "10:30 - 11:00",

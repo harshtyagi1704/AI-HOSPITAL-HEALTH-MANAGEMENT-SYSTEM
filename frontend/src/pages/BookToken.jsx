@@ -102,10 +102,21 @@ function BookToken() {
             required
           >
             <option value="">Select Department</option>
-            <option value="Cardiology">Cardiology</option>
-            <option value="Neurology">Neurology</option>
-            <option value="Orthopedics">Orthopedics</option>
-            <option value="Dermatology">Dermatology</option>
+    <option>General Medicine</option>
+    <option>Cardiology</option>
+    <option>Neurology</option>
+    <option>Orthopedics</option>
+    <option>Dermatology</option>
+    <option>Pediatrics</option>
+    <option>Gynecology</option>
+    <option>ENT</option>
+    <option>Ophthalmology</option>
+    <option>Dentistry</option>
+    <option>Pulmonology</option>
+    <option>Nephrology</option>
+    <option>Urology</option>
+    <option>General Surgery</option>
+    <option>Psychiatry</option>
           </select>
 
           <label>Priority</label>
