@@ -3,6 +3,35 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+html,
+body,
+#root,
+.card,
+button,
+input,
+select,
+textarea,
+table,
+nav,
+header,
+main,
+section,
+aside,
+footer,
+h1,
+h2,
+p,
+code,
+.counter {
+  transition:
+    background-color 0.55s ease-in-out,
+    color 0.55s ease-in-out,
+    border-color 0.55s ease-in-out,
+    box-shadow 0.55s ease-in-out,
+    fill 0.55s ease-in-out,
+    stroke 0.55s ease-in-out;
+}
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -57,6 +86,8 @@
 
 body {
   margin: 0;
+  background: var(--page-bg, var(--bg));
+  color: var(--text-main, var(--text));
 }
 
 #root {
@@ -117,7 +148,12 @@ border-radius:15px;
 box-shadow:0 5px 15px rgba(0,0,0,.1);
 text-align:center;
 cursor:pointer;
-transition:.3s;
+transition:
+  transform 0.55s ease,
+  background-color 0.55s ease-in-out,
+  color 0.55s ease-in-out,
+  border-color 0.55s ease-in-out,
+  box-shadow 0.55s ease-in-out;
 }
 
 .card:hover{
@@ -127,19 +163,19 @@ box-shadow:0 12px 25px rgba(0,0,0,.2);
 /* ================= PHASE 42: PRODUCTION FEATURES ================= */
 
 :root {
-  --card-bg: #0d586e4d;
-  --page-bg: #9fb2b6;
-  --text-main: #222222;
-  --border-main: #e5e4e7;
+  --card-bg: #4f7a85a1;
+  --page-bg: #849ca1;
+  --text-main: #000000;
+  --border-main: #000000;
   --skeleton-base: #e8e8e8;
   --skeleton-shine: #f4f4f4;
 }
 
 html[data-theme="dark"] {
-  --card-bg: #0a33387c;
-  --page-bg: #12131a;
-  --text-main: #ffffff;
-  --border-main: #333542;
+  --card-bg: #000000ad;
+  --page-bg: #111f22af;
+  --text-main: #ffffffa2;
+  --border-main: #152ab1;
   --skeleton-base: #2a2c36;
   --skeleton-shine: #383b48;
 }
@@ -174,6 +210,11 @@ html[data-theme="dark"] textarea {
 
 /* ================= SKELETON LOADERS ================= */
 
+
+.skeleton {
+  transition: none;
+}
+
 .skeleton {
   background: linear-gradient(
     90deg,
@@ -194,7 +235,7 @@ html[data-theme="dark"] textarea {
 /* ================= RESPONSIVE SIDEBAR (MOBILE) ================= */
 
 .app-sidebar {
-  transition: transform 0.25s ease-in-out;
+  transition: transform 0.55s ease-in-out;
 }
 
 .sidebar-hamburger {
@@ -222,5 +263,31 @@ html[data-theme="dark"] textarea {
     top: 16px;
     left: 16px;
     z-index: 1000;
+  }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  html,
+  body,
+  #root,
+  .card,
+  button,
+  input,
+  select,
+  textarea,
+  table,
+  nav,
+  header,
+  main,
+  section,
+  aside,
+  footer,
+  h1,
+  h2,
+  p,
+  code,
+  .counter {
+    transition: none !important;
   }
 }

@@ -47,7 +47,7 @@ function AdminDashboard() {
 {/* Reception */}
 <Link
   to="/admin/users"
-  state={{ role: "reception." }}
+  state={{ role: "reception" }}
   style={{ textDecoration: "none", color: "inherit" }}
 >
   <div className="card" style={{ cursor: "pointer" }}>
