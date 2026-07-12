@@ -54,6 +54,7 @@ function AdminBilling() {
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
           gap: "20px",
+          
           marginBottom: "30px",
         }}
       >
@@ -79,7 +80,7 @@ function AdminBilling() {
 
       <div style={{ overflowX: "", background: "var(--card-bg)", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,.08)" }}>
         <table width="100%" cellPadding="12" style={{ borderCollapse: "collapse" }}>
-          <thead style={{ background: "#2e915b", color: "white" }}>
+          <thead style={{ background: "#105c32", color: "white" }}>
             <tr>
  <th style={{ textAlign: "center", padding: "5px" }}>Invoice #</th>
     <th style={{ textAlign: "center", padding: "5px" }}>Patient</th>

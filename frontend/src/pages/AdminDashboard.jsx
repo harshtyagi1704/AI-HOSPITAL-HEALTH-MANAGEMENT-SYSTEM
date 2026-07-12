@@ -6,9 +6,9 @@ function AdminDashboard() {
   return (
     <Layout>
 
-      <h2 style={{ marginTop: "0px", color: "#105f6d" }}>ADMIN DASHBOARD </h2>
+      <h2 style={{ textAlign: "center", marginTop: "0px", color: "#105f6d" }}>ADMIN DASHBOARD </h2>
 
-      <p>
+      <p  style={{ textAlign: "center"}}>
         Welcome Administrator.
       </p>
 

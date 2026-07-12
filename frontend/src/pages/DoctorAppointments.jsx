@@ -50,14 +50,14 @@ function DoctorAppointments() {
   return (
     <Layout>
       <h2 style={{ color: "#0f7291",marginTop: "-15px" }}>APPOINTMENT CALENDER</h2>
-      <p style={{ color: "#f7f0f0c5", marginBottom: "30px" }}>
+      <p style={{ color: "#666", marginBottom: "15px" }}>
         Review and manage patient appointment requests.
       </p>
 
       {loading && <h2>Loading...</h2>}
 
       {!loading && appointments.length === 0 && (
-        <h2 style={{ color: "#f7f0f0b2" }}>No appointments scheduled.</h2>
+        <h2 style={{ color: "#666" }}>No appointments scheduled.</h2>
       )}
 
       {!loading &&

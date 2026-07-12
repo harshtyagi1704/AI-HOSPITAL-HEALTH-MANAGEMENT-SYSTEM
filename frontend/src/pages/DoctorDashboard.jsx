@@ -73,7 +73,7 @@ function DoctorDashboard() {
 
   return (
     <Layout>
-      <h2 style={{ marginTop: "-15px", color: "#105f6d" }}>DOCTOR DASHBOARD</h2>
+      <h2 style={{ marginTop: "-15px", color: "#0f7291" }}>DOCTOR DASHBOARD</h2>
 
       <p style={{ color: "#666", marginBottom: "20px" }}>
         Manage today's patient queue and consultations.
@@ -114,9 +114,9 @@ function DoctorDashboard() {
         <Link to="/doctor/appointments">
           <button
             style={{
-              background: "white",
-              border: "1px solid #1976d2",
-              color: "#1976d2",
+              background: "#9e2222f5",
+              border: "1px solid #000000",
+              color: "#ffffff",
               padding: "10px 18px",
               borderRadius: "8px",
               cursor: "pointer",
@@ -130,8 +130,8 @@ function DoctorDashboard() {
           <button
             style={{
               background: "white",
-              border: "1px solid #1976d2",
-              color: "#1976d2",
+              border: "1px solid #000000",
+              color: "#ff0000",
               padding: "10px 18px",
               borderRadius: "8px",
               cursor: "pointer",

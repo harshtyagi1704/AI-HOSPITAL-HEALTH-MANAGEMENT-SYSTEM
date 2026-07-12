@@ -15,8 +15,8 @@ function Sidebar({ open, onClose }) {
       className={`app-sidebar${open ? " open" : ""}`}
       style={{
         width: "260px",
-        background: "#105f6d",
-        color: "#f8f4f6",
+        background: "#1a5f6be5",
+        color: "#fafafa",
         minHeight: "100vh",
         padding: "12px",
         position: "fixed",

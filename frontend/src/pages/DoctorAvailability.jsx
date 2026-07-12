@@ -83,7 +83,7 @@ function DoctorAvailability() {
 
   return (
     <Layout>
-      <h2 style={{ color: "#1d7294",marginTop: "-15px" }}>SET TIME SLOT</h2>
+      <h2 style={{ color: "#0f7291",marginTop: "-15px" }}>SET TIME SLOT</h2>
       <p style={{ color: "#666", marginBottom: "20px" }}>
         Toggle the days you're available and set your working hours.
       </p>

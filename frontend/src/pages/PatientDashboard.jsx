@@ -93,9 +93,11 @@ function PatientDashboard() {
           <p style={{ color: "#851f1f", marginBottom: "10px" }}>
           
           </p>
-        </div >
+        </div  >
 
-        <NotificationBell  />
+        <div style={{ marginTop: "-15px", marginBottom: "15px",marginRight: "1px" }}>
+  <NotificationBell />
+</div>
       </div>
 
       {/* ================= 35: PATIENT DASHBOARD - CURRENT TOKEN ================= */}
@@ -103,7 +105,7 @@ function PatientDashboard() {
       <div
   className="card"
   style={{
-    marginBottom: "30px",
+    marginBottom: "20px",
     background: "#105f6d",   // 👈 change this hex to whatever color you want
   }}
 >
@@ -178,7 +180,7 @@ function PatientDashboard() {
           
           gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
           gap: "20px",
-          marginBottom: "40px",
+          marginBottom: "20px",
         }}
       >
         {/* <StatCard title="Token Generated" value={stats.totalTokens} color="#0a2b35" /> */}

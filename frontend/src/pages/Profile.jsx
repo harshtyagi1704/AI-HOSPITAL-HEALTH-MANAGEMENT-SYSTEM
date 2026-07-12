@@ -156,7 +156,7 @@ function Profile() {
 
   return (
     <Layout>
-      <h2 style={{ color: "#217094",marginTop: "-15px" }}>MY PROFILE</h2>
+      <h2 style={{ color: "#217094",marginTop: "-5px" }}>MY PROFILE</h2>
 
       {!profile.isVerified && (
         <div
@@ -212,14 +212,15 @@ function Profile() {
                 }}
               />
             ) : (
-              <FaUserCircle size={100} color="#1976d2" />
+              <FaUserCircle size={100} color="#8a0606" />
             )}
 
             <div style={{ marginTop: "10px" }}>
               <label
                 style={{
                   cursor: "pointer",
-                  color: "#1976d2",
+                  color: "#8d0000",
+                 
                   textDecoration: "underline",
                 }}
               >

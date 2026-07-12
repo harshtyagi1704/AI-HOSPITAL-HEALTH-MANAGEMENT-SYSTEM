@@ -164,8 +164,8 @@ box-shadow:0 12px 25px rgba(0,0,0,.2);
 
 :root {
   --card-bg: #4f7a85a1;
-  --page-bg: #849ca1;
-  --text-main: #000000;
+  --page-bg: #9fb5b9;
+  --text-main: #1f1c1c;
   --border-main: #000000;
   --skeleton-base: #e8e8e8;
   --skeleton-shine: #f4f4f4;
@@ -174,7 +174,7 @@ box-shadow:0 12px 25px rgba(0,0,0,.2);
 html[data-theme="dark"] {
   --card-bg: #000000ad;
   --page-bg: #111f22af;
-  --text-main: #ffffffa2;
+  --text-main: #b6cbd1;
   --border-main: #152ab1;
   --skeleton-base: #2a2c36;
   --skeleton-shine: #383b48;

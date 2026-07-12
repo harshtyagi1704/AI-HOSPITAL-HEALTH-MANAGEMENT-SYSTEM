@@ -55,7 +55,7 @@ function AdminAnalytics() {
   }, []);
 
   const chartCard = {
-    background: "white",
+    background: "#63707a",
     borderRadius: "14px",
     padding: "20px",
     boxShadow: "0 8px 20px rgba(0,0,0,.08)",
@@ -84,14 +84,16 @@ function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={260}>
               <LineChart data={daily}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 11 ,fill: "#0d1114" }} />
+                <YAxis tick={{ fontSize: 15,fill: "#0d1114" }}allowDecimals={false} />
                 <Tooltip />
                 <Line
+                
                   type="monotone"
                   dataKey="patients"
-                  stroke="#1976d2"
+                  stroke="#073057"
                   strokeWidth={2}
+                  
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -103,8 +105,8 @@ function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={monthly}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} />
+                <XAxis dataKey="month" tick={{ fontSize: 11,fill: "#0d1114" }} />
+                <YAxis tick={{ fill: "#0d1114"}}allowDecimals={false} />
                 <Tooltip />
                 <Bar dataKey="patients" fill="#43a047" radius={[6, 6, 0, 0]} />
               </BarChart>
@@ -144,8 +146,8 @@ function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={doctorPerf}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} />
+                <XAxis dataKey="name" tick={{ fontSize: 11,fill: "#0d1114" }} />
+                <YAxis tick={{ fill: "#0d1114"}}allowDecimals={false} />
                 <Tooltip />
                 <Legend />
                 <Bar
@@ -170,14 +172,14 @@ function AdminAnalytics() {
             <ResponsiveContainer width="100%" height={280}>
               <LineChart data={queueTrends}>
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 11 }} />
-                <YAxis allowDecimals={false} />
+                <XAxis dataKey="date" tick={{ fill: "#0d1114",fontSize: 11 }} />
+                <YAxis tick={{ fill: "#0d1114"}}allowDecimals={false} />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="waiting" stroke="#f57c00" />
-                <Line type="monotone" dataKey="in-progress" stroke="#1976d2" />
-                <Line type="monotone" dataKey="completed" stroke="#2e7d32" />
-                <Line type="monotone" dataKey="cancelled" stroke="#9e9e9e" />
+                <Line type="monotone" dataKey="waiting" stroke="#000000" />
+                <Line type="monotone" dataKey="in-progress" stroke="#000000" />
+                <Line type="monotone" dataKey="completed" stroke="#000000" />
+                <Line type="monotone" dataKey="cancelled" stroke="#000000" />
               </LineChart>
             </ResponsiveContainer>
           </div>
