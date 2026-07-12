@@ -70,7 +70,7 @@ const invoiceSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: ["card", "upi", "cash", "netbanking", null],
+      enum: ["card", "upi", "cash", "netbanking", "razorpay", null],
       default: null,
     },
 
@@ -81,6 +81,22 @@ const invoiceSchema = new mongoose.Schema(
 
     paidAt: {
       type: Date,
+      default: null,
+    },
+
+    // ================= RAZORPAY PAYMENT DETAILS =================
+    razorpayOrderId: {
+      type: String,
+      default: null,
+    },
+
+    razorpayPaymentId: {
+      type: String,
+      default: null,
+    },
+
+    razorpaySignature: {
+      type: String,
       default: null,
     },
   },

@@ -5,6 +5,7 @@ import Layout from "../components/Layout";
 import LogoutButton from "../components/LogoutButton";
 import { SkeletonCard } from "../components/Skeleton";
 import api from "../services/api";
+import { openRazorpayCheckout } from "../utils/razorpay";
 
 const statusColor = {
   pending: "#f57c00",
@@ -17,6 +18,7 @@ function MyInvoices() {
   const [loading, setLoading] = useState(true);
   const [payingId, setPayingId] = useState(null);
   const [paymentMethod, setPaymentMethod] = useState("card");
+  const [processingId, setProcessingId] = useState(null);
 
   const fetchInvoices = async () => {
     try {
@@ -34,12 +36,58 @@ function MyInvoices() {
   }, []);
 
   const handlePay = async (id) => {
+    // "Cash" is settled manually at the front desk, so we keep the simple
+    // simulated flow for that. Card/UPI/Net Banking go through Razorpay.
+    if (paymentMethod === "cash") {
+      try {
+        await api.put(`/billing/${id}/pay`, { paymentMethod });
+        toast.success("Marked as paid (cash) 🎉");
+        fetchInvoices();
+      } catch (error) {
+        toast.error(error.response?.data?.message || "Payment failed");
+      }
+      return;
+    }
+
+    setProcessingId(id);
+
     try {
-      await api.put(`/billing/${id}/pay`, { paymentMethod });
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // 1. Ask backend to create a Razorpay order for this invoice
+      const orderRes = await api.post(`/billing/${id}/razorpay/order`);
+      const { order, keyId, invoice } = orderRes.data;
+
+      // 2. Open Razorpay Checkout and wait for the user to complete payment
+      const paymentResponse = await openRazorpayCheckout({
+        order,
+        keyId,
+        invoice,
+        patientName: user?.name,
+        patientEmail: user?.email,
+        patientPhone: user?.phone,
+      });
+
+      // 3. Verify the payment signature server-side before trusting it
+      await api.post(`/billing/${id}/razorpay/verify`, {
+        razorpay_order_id: paymentResponse.razorpay_order_id,
+        razorpay_payment_id: paymentResponse.razorpay_payment_id,
+        razorpay_signature: paymentResponse.razorpay_signature,
+      });
+
       toast.success("Payment successful 🎉");
+      setPayingId(null);
       fetchInvoices();
     } catch (error) {
-      toast.error(error.response?.data?.message || "Payment failed");
+      if (error.message === "Payment cancelled") {
+        toast.info("Payment cancelled");
+      } else {
+        toast.error(
+          error.response?.data?.message || error.message || "Payment failed"
+        );
+      }
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -47,8 +95,8 @@ function MyInvoices() {
     <Layout>
       <h2 style={{marginTop: "-15px", color: "#256d97" }}>MY INVOICES</h2>
       <p style={{ color: "#666", marginBottom: "10px" }}>
-        View and pay your hospital bills. Payments here are simulated for
-        demo purposes.
+        View and pay your hospital bills securely via Razorpay (Card / UPI /
+        Net Banking), or mark cash payments made at the front desk.
       </p>
 
       {loading && (
@@ -132,16 +180,23 @@ function MyInvoices() {
                         </select>
                         <button
                           onClick={() => handlePay(inv._id)}
+                          disabled={processingId === inv._id}
                           style={{
                             background: "#2e7d32",
                             color: "white",
                             border: "none",
                             padding: "8px 16px",
                             borderRadius: "6px",
-                            cursor: "pointer",
+                            cursor:
+                              processingId === inv._id
+                                ? "not-allowed"
+                                : "pointer",
+                            opacity: processingId === inv._id ? 0.7 : 1,
                           }}
                         >
-                          Confirm Pay ₹{inv.total}
+                          {processingId === inv._id
+                            ? "Processing..."
+                            : `Confirm Pay ₹${inv.total}`}
                         </button>
                       </div>
                     ) : (

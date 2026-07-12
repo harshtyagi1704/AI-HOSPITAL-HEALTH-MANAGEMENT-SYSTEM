@@ -20,6 +20,7 @@ const reportRoutes = require("./routes/reportRoutes");
 const billingRoutes = require("./routes/billingRoutes");
 const profileRoutes = require("./routes/profileRoutes");
 const auditRoutes = require("./routes/auditRoutes");
+const { razorpayWebhook } = require("./controllers/billingController");
 
 // Jobs
 const startAppointmentReminderJob = require("./jobs/appointmentReminder");
@@ -125,6 +126,14 @@ io.on("connection", (socket) => {
 });
 
 // ================= MIDDLEWARE =================
+
+// Razorpay webhook needs the RAW request body to verify the signature, so
+// this must be registered BEFORE the global express.json() parser below.
+app.post(
+  "/api/billing/webhook/razorpay",
+  express.raw({ type: "application/json" }),
+  razorpayWebhook
+);
 
 app.use(express.json());
 

@@ -10,7 +10,13 @@ const {
   getInvoiceById,
   payInvoice,
   getAllInvoices,
+  createRazorpayOrder,
+  verifyRazorpayPayment,
 } = require("../controllers/billingController");
+
+// NOTE: the Razorpay webhook route (POST /api/billing/webhook/razorpay) is
+// mounted separately in server.js because it needs the raw request body for
+// signature verification, before express.json() runs.
 
 // Doctor/Reception/Admin - create an ad-hoc invoice
 router.post(
@@ -29,7 +35,23 @@ router.get("/", protect, authorize("admin"), getAllInvoices);
 // View a single invoice / receipt (patient sees own, staff can view any)
 router.get("/:id", protect, getInvoiceById);
 
-// Patient - pay an invoice (simulated payment)
+// Patient - pay an invoice (simulated payment, e.g. cash/manual entry)
 router.put("/:id/pay", protect, authorize("patient"), payInvoice);
+
+// Patient - create a Razorpay order for a pending invoice
+router.post(
+  "/:id/razorpay/order",
+  protect,
+  authorize("patient"),
+  createRazorpayOrder
+);
+
+// Patient - verify Razorpay payment after Checkout succeeds
+router.post(
+  "/:id/razorpay/verify",
+  protect,
+  authorize("patient"),
+  verifyRazorpayPayment
+);
 
 module.exports = router;
