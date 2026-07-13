@@ -194,6 +194,7 @@ function ReceptionDashboard() {
                   gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))",
                   gap: "20px",
                   marginBottom: "30px",
+                  
                 }}
               >
                 <div className="card">
@@ -230,7 +231,7 @@ function ReceptionDashboard() {
                   cellPadding="10"
                   style={{ borderCollapse: "collapse" }}
                 >
-                  <thead style={{ background: "#1976d2", color: "white" }}>
+                  <thead style={{ background: "#2d5c68"}}>
                     <tr>
                       <th>Token</th>
                       <th>Patient</th>
@@ -241,77 +242,116 @@ function ReceptionDashboard() {
                     </tr>
                   </thead>
 
-                  <tbody>
-                    {filteredQueue.map((item) => (
-                      <tr
-                        key={item._id}
-                        style={{
-                          background:
-                            item.priority === "emergency"
-                              ? "#ffebee"
-                              : "white",
-                        }}
-                      >
-                        <td style={{ textAlign: "center" }}>{item.tokenNumber}</td>
+                 <tbody>
+  {filteredQueue.map((item) => (
+    <tr
+      key={item._id}
+      style={{
+        background:
+          item.priority === "emergency"
+            ? "#5c1f1f"
+            : "#292e31", // Dark blue-gray
+        color: "#ffffff",
+      }}
+    >
+      <td
+        style={{
+          textAlign: "center",
+          color: "#ffffff",
+         
+        }}
+      >
+        {item.tokenNumber}
+      </td>
 
-                        <td style={{ textAlign: "center" }}>{item.patient?.name}</td>
+      <td
+        style={{
+          textAlign: "center",
+          color: "#ffffff",
+          
+        }}
+      >
+        {item.patient?.name}
+      </td>
 
-                        <td style={{ textAlign: "center" }}>{item.department}</td>
+      <td
+        style={{
+          textAlign: "center",
+          color: "#ffffff",
+          
+        }}
+      >
+        {item.department}
+      </td>
 
-                        <td style={{ textAlign: "center" }}>
-                          {item.priority === "emergency"
-                            ? " Emergency"
-                            : " Normal"}
-                        </td>
+      <td
+        style={{
+          textAlign: "center",
+          color: "#ffffff",
+        
+        }}
+      >
+        {item.priority === "emergency" ? "Emergency" : "Normal"}
+      </td>
 
-                        <td style={{ textAlign: "center" }}>
-                          <span
-                            style={{
-                              padding: "5px 12px",
-                              borderRadius: "20px",
-                              color: "white",
-                              background:
-                                item.status === "waiting"
-                                  ? "#f57c00"
-                                  : item.status === "in-progress"
-                                  ? "#1976d2"
-                                  : "#2e7d32",
-                            }}
-                          >
-                            {item.status}
-                          </span>
-                        </td>
+      <td
+        style={{
+          textAlign: "center",
+         
+        }}
+      >
+        <span
+          style={{
+            padding: "1px 10px",
+            borderRadius: "20px",
+            color: "#ffffff",
+            background:
+              item.status === "waiting"
+                ? "#f57c00"
+                : item.status === "in-progress"
+                ? "#1976d2"
+                : "#2e7d32",
+          }}
+        >
+          {item.status}
+        </span>
+      </td>
 
-                        <td style={{ textAlign: "center" }}>
-                          <button
-                            onClick={() => cancelToken(item._id)}
-                            disabled={
-                              item.status === "completed" ||
-                              item.status === "cancelled"
-                            }
-                            style={{
-                              background:
-                                item.status === "completed" ||
-                                item.status === "cancelled"
-                                  ? "#bbb"
-                                  : "#d32f2f",
-                              color: "white",
-                              border: "none",
-                              padding: "8px 15px",
-                              borderRadius: "5px",
-                              cursor:
-                                item.status === "completed" ||
-                                item.status === "cancelled"
-                                  ? "not-allowed"
-                                  : "pointer",
-                            }}
-                          >
-                            Cancel
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+      <td
+        style={{
+          textAlign: "center",
+         
+        }}
+      >
+        <button
+          onClick={() => cancelToken(item._id)}
+          disabled={
+            item.status === "completed" ||
+            item.status === "cancelled"
+          }
+          style={{
+            background:
+              item.status === "completed" ||
+              item.status === "cancelled"
+                ? "#666"
+                : "#d32f2f",
+            color: "#ffffff",
+            border: "none",
+            padding: "5px 10px",
+            borderRadius: "20px",
+            cursor:
+              item.status === "completed" ||
+              item.status === "cancelled"
+                ? "not-allowed"
+                : "pointer",
+          }}
+        >
+          Cancel
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
                 </table>
               </div>
             </>

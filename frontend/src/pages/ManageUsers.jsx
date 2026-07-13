@@ -287,7 +287,7 @@ function ManageUsers() {
             ⬇ Export Excel
           </button>
 
-          <button
+          {/* <button
             onClick={handleExportPDF}
             disabled={exporting}
             style={{
@@ -301,7 +301,7 @@ function ManageUsers() {
             }}
           >
             ⬇ Export PDF
-          </button>
+          </button> */}
 
           <button
             onClick={() => {
@@ -330,6 +330,7 @@ function ManageUsers() {
             "repeat(auto-fit, minmax(220px, 1fr))",
           gap: 20,
           marginBottom: 30,
+         
         }}
       >
         <DashboardCard
