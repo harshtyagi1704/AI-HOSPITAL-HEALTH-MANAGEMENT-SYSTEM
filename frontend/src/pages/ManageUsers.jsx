@@ -446,7 +446,7 @@ function ManageUsers() {
                     padding: 30,
                   }}
                 >
-                  👥 No users found.
+                  No users found.
                 </td>
               </tr>
             ) : (

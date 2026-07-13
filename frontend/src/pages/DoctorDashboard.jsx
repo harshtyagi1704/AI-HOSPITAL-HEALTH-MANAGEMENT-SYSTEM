@@ -214,7 +214,7 @@ function DoctorDashboard() {
                           border: "none",
                           background: "none",
                           color: "#1976d2",
-                          textDecoration: "underline",
+                          textDecoration: "",
                           cursor: "pointer",
                           padding: 0,
                           font: "inherit",

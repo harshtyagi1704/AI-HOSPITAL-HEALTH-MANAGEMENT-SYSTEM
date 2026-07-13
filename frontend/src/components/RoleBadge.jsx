@@ -3,22 +3,22 @@ function RoleBadge({ role }) {
     admin: {
       background: "#fdecea",
       color: "#d32f2f",
-      label: "👑 Admin",
+      label: "Admin",
     },
     doctor: {
       background: "#e8f5e9",
       color: "#2e7d32",
-      label: "👨‍⚕️ Doctor",
+      label: " Doctor",
     },
     reception: {
       background: "#fff3e0",
       color: "#ef6c00",
-      label: "🏥 Reception",
+      label: "Reception",
     },
     patient: {
       background: "#e3f2fd",
       color: "#1976d2",
-      label: "🧑 Patient",
+      label: "Patient",
     },
   };
 
@@ -33,8 +33,8 @@ function RoleBadge({ role }) {
       style={{
         background: config.background,
         color: config.color,
-        padding: "6px 14px",
-        borderRadius: "50px",
+        padding: "px 1px",
+        borderRadius: "20px",
         fontWeight: "600",
         fontSize: "14px",
         display: "inline-block",
