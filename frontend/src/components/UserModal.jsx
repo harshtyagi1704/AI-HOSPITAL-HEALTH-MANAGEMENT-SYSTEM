@@ -34,12 +34,12 @@ export default function UserModal({open,onClose,editingUser,refreshUsers}){
    <h2>{editingUser?"Edit User":"Add User"}</h2>
    {["name","email","phone"].map(f=><input key={f} name={f} value={form[f]} onChange={change} placeholder={f} style={{width:"100%",padding:10,margin:"8px 0"}}/>)}
    {!editingUser&&<input type="password" name="password" value={form.password} onChange={change} placeholder="Password" style={{width:"100%",padding:10,margin:"8px 0"}}/>}
-   <select name="role" onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
+   <select name="role" value={form.role} onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
     
      <option value="">Select role</option><option value="patient">Patient</option><option value="doctor">Doctor</option><option value="reception">Reception</option><option value="admin">Admin</option>
    </select>
    
- <select name="role" value={form.role} onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
+ <select name="department" value={form.role} onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
     
   <option value="">Select Department</option>
      <option>General Medicine</option>

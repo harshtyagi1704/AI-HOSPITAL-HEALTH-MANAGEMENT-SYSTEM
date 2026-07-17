@@ -31,10 +31,14 @@ const userSchema = new mongoose.Schema(
       default: "patient",
     },
 
-    department: {
-      type: String,
-      default: "",
-    },
+    // department: {
+    //   type: String,
+    //   default: "",
+    // },
+    departments: {
+  type: [String],
+  default: [],
+},
 
     age: {
       type: Number,
