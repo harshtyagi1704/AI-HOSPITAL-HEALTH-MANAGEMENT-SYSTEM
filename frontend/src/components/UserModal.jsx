@@ -39,7 +39,7 @@ export default function UserModal({open,onClose,editingUser,refreshUsers}){
      <option value="">Select role</option><option value="patient">Patient</option><option value="doctor">Doctor</option><option value="reception">Reception</option><option value="admin">Admin</option>
    </select>
    
- <select name="department" value={form.role} onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
+ <select name="department" value={form.department} onChange={change} style={{width:"100%",padding:10,margin:"8px 0"}}>
     
   <option value="">Select Department</option>
      <option>General Medicine</option>
