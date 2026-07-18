@@ -7,7 +7,7 @@ const API_ORIGIN = "https://hospital-backend-9e41.onrender.com";
 
 function Sidebar({ open, onClose }) {
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   return (
 

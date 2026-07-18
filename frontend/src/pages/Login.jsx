@@ -29,9 +29,9 @@ function Login() {
 
       const response = await api.post("/auth/login", formData);
 
-      localStorage.setItem("token", response.data.token);
+      sessionStorage.setItem("token", response.data.token);
 
-      localStorage.setItem(
+      sessionStorage.setItem(
         "user",
         JSON.stringify(response.data.user)
       );

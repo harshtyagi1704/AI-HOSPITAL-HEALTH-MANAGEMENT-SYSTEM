@@ -19,7 +19,7 @@ import api from "../services/api";
 import socket from "../services/socket";
 
 function PatientDashboard() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
 
   const [stats, setStats] = useState({
     totalTokens: 0,

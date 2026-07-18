@@ -52,7 +52,7 @@ function MyInvoices() {
     setProcessingId(id);
 
     try {
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(sessionStorage.getItem("user") || "{}");
 
       // 1. Ask backend to create a Razorpay order for this invoice
       const orderRes = await api.post(`/billing/${id}/razorpay/order`);

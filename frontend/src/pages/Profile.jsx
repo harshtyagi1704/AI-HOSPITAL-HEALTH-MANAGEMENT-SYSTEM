@@ -58,9 +58,9 @@ function Profile() {
       const res = await api.put("/profile/me", form);
       setProfile(res.data.user);
 
-      // Keep sidebar/localStorage user name in sync
-      const localUser = JSON.parse(localStorage.getItem("user"));
-      localStorage.setItem(
+      // Keep sidebar/sessionStorage user name in sync
+      const localUser = JSON.parse(sessionStorage.getItem("user"));
+      sessionStorage.setItem(
         "user",
         JSON.stringify({ ...localUser, name: res.data.user.name })
       );
@@ -88,8 +88,8 @@ function Profile() {
 
       setProfile((prev) => ({ ...prev, avatar: res.data.avatar }));
 
-      const localUser = JSON.parse(localStorage.getItem("user"));
-      localStorage.setItem(
+      const localUser = JSON.parse(sessionStorage.getItem("user"));
+      sessionStorage.setItem(
         "user",
         JSON.stringify({ ...localUser, avatar: res.data.avatar })
       );

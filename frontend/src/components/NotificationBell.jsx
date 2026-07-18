@@ -4,7 +4,7 @@ import { FaBell } from "react-icons/fa";
 import socket from "../services/socket";
 
 function NotificationBell() {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const [notifications, setNotifications] = useState([]);
   const [open, setOpen] = useState(false);
 
