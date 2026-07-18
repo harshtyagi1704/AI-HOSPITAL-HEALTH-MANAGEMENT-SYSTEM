@@ -26,6 +26,7 @@ const { razorpayWebhook } = require("./controllers/billingController");
 const startAppointmentReminderJob = require("./jobs/appointmentReminder");
 
 const app = express();
+app.set("etag", false);
 const server = http.createServer(app);
 
 // ================= CORS CONFIGURATION =================

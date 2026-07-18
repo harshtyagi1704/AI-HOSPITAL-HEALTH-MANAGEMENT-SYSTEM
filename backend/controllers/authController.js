@@ -309,7 +309,7 @@ const updateUser = async (req, res) => {
             role,
             department
         } = req.body;
-
+console.log("🔎 UPDATE USER DEBUG — id:", id, "| department received:", JSON.stringify(department));
         const user = await User.findById(id);
 
         if (!user) {
@@ -339,7 +339,7 @@ const updateUser = async (req, res) => {
         user.department = department;
 
         await user.save();
-
+console.log("🔎 AFTER SAVE — department is now:", user.department);
         await logAudit(req, "USER_UPDATED", `Admin updated user: ${user.email}`);
 
         res.status(200).json({
