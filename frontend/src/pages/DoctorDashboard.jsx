@@ -178,9 +178,9 @@ function DoctorDashboard() {
 
           {/* ================= TABLE ================= */}
 
-      <div style={{ overflowX: "", background: "var(--card-bg)", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,.08)" }}>
+      <div style={{ overflowX: "auto", background: "var(--card-bg)", borderRadius: 12, boxShadow: "0 4px 12px rgba(0,0,0,.08)" }}>
         <table width="100%" cellPadding="12" style={{ borderCollapse: "collapse" }}>
-          <thead style={{ background: "#2e915b", color: "white" }}>
+          <thead style={{ background: "#22583a", color: "white" }}>
                 <tr>
                   <th>Token</th>
                   <th>Patient</th>
@@ -205,7 +205,7 @@ function DoctorDashboard() {
                       fontWeight: item._id === nextPatient?._id ? "bold" : "normal",
                     }}
                   >
-                    <td style={{ textAlign: "center" }}>{item.tokenNumber}</td>
+                    <td style={{ textAlign: "center", color:"#0e0e0ef5" }}>{item.tokenNumber}</td>
 
                     <td style={{ textAlign: "center" }}>
                       <button
@@ -224,9 +224,9 @@ function DoctorDashboard() {
                       </button>
                     </td>
 
-                    <td style={{ textAlign: "center" }}>{item.department}</td>
+                    <td style={{ textAlign: "center", color:"#0e0e0ef5"}}>{item.department}</td>
 
-                    <td style={{ textAlign: "center" }}>
+                    <td style={{ textAlign: "center", color:"#000000" }}>
                       {item.priority === "emergency" && "Emergency"}
                       {item.priority === "senior" && "Senior Citizen"}
                       {item.priority === "child" && "Child"}
